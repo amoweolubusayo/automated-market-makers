@@ -1,4 +1,4 @@
-pragma solidity =0.6.6;
+pragma solidity ^0.8.4;
 
 import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
@@ -8,7 +8,7 @@ import "@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol";
 import "@uniswap/v2-periphery/contracts/libraries/SafeMath.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
-import "../StakingToken.sol"
+import "./StakingToken.sol"
 
 contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
     using SafeMath for uint;

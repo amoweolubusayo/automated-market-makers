@@ -1,4 +1,4 @@
-pragma solidity =0.5.16;
+pragma solidity ^0.8.4;
 
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "@uniswap/v2-core/contracts/UniswapV2ERC20.sol";
