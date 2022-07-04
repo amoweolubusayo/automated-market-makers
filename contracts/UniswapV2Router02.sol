@@ -1,27 +1,25 @@
 pragma solidity ^0.8.4;
 
-import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import "../util/interfaces/IUniswapV2Factory.sol";
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
-
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import "@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol";
-import "@uniswap/v2-periphery/contracts/libraries/SafeMath.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
+import "../util/interfaces/IUniswapV2Router02.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
-import "./StakingToken.sol"
+import "../util/libraries/SafeMath.sol";
+import "../util/libraries/UniswapV2Library.sol";
+import "./StakingToken.sol";
 
-contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
+abstract contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
     using SafeMath for uint;
 
-    address public immutable override factory;
-    address public immutable override WETH;
+    address factory;
+    address WETH;
 
     modifier ensure(uint deadline) {
         require(deadline >= block.timestamp, 'UniswapV2Router: EXPIRED');
         _;
     }
 
-    constructor(address _factory, address _WETH) public {
+    constructor(address _factory, address _WETH) {
         factory = _factory;
         WETH = _WETH;
     }
@@ -114,7 +112,7 @@ contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
         uint deadline
     ) public virtual override ensure(deadline) returns (uint amountA, uint amountB) {
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-        IUniswapV2Pair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
+       // IUniswapV2Pair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
         (uint amount0, uint amount1) = IUniswapV2Pair(pair).burn(to);
         (address token0,) = UniswapV2Library.sortTokens(tokenA, tokenB);
         (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
@@ -153,8 +151,8 @@ contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
         bool approveMax, uint8 v, bytes32 r, bytes32 s
     ) external virtual override returns (uint amountA, uint amountB) {
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-        uint value = approveMax ? uint(-1) : liquidity;
-        IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+        uint value = approveMax ? type(uint).max : liquidity;
+       // IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
         (amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline);
     }
     function removeLiquidityETHWithPermit(
@@ -167,8 +165,8 @@ contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
         bool approveMax, uint8 v, bytes32 r, bytes32 s
     ) external virtual override returns (uint amountToken, uint amountETH) {
         address pair = UniswapV2Library.pairFor(factory, token, WETH);
-        uint value = approveMax ? uint(-1) : liquidity;
-        IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+        uint value = approveMax ? type(uint).max : liquidity;
+       // IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
         (amountToken, amountETH) = removeLiquidityETH(token, liquidity, amountTokenMin, amountETHMin, to, deadline);
     }
 
@@ -204,8 +202,8 @@ contract UniswapV2Router02 is IUniswapV2Router02, StakingToken{
         bool approveMax, uint8 v, bytes32 r, bytes32 s
     ) external virtual override returns (uint amountETH) {
         address pair = UniswapV2Library.pairFor(factory, token, WETH);
-        uint value = approveMax ? uint(-1) : liquidity;
-        IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+        uint value = approveMax ? type(uint).max : liquidity;
+        //IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
         amountETH = removeLiquidityETHSupportingFeeOnTransferTokens(
             token, liquidity, amountTokenMin, amountETHMin, to, deadline
         );

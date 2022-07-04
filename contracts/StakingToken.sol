@@ -2,10 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@uniswap/v2-core/contracts/UniswapV2ERC20.sol";
+import "../util/UniswapV2ERC20.sol";
 import "./RewardToken.sol";
 
 contract StakingToken is Ownable{
@@ -51,9 +51,9 @@ contract StakingToken is Ownable{
     /**
      * Create the Staking pool
      */
-    function createStakingPool(IERC20 _stakeToken) external onlyOwner {
+    function createStakingPool(uint256 _stakeToken) external onlyOwner {
         Pool memory pool;
-        pool.stakeToken =  _stakeToken;
+        // pool.stakeToken =  _stakeToken;
         pools.push(pool);
         uint256 poolId = pools.length - 1;
         emit PoolCreated(poolId);
@@ -79,7 +79,7 @@ contract StakingToken is Ownable{
 
         // Deposit tokens
         emit Deposit(msg.sender, _poolId, _amount);
-        pool.stakeToken.safeTransferFrom(
+        pool.stakeToken.transferFrom(
             address(msg.sender),
             address(this),
             _amount
@@ -108,7 +108,7 @@ contract StakingToken is Ownable{
 
         // Withdraw tokens
         emit Withdraw(msg.sender, _poolId, _amount);
-        pool.stakeToken.safeTransfer(
+        pool.stakeToken.transfer(
             address(msg.sender),
             _amount
         );
