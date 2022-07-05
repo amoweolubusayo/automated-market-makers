@@ -10,6 +10,14 @@ describe("StakingToken", () => {
     this.stakeToken = await this.StakingToken.deploy(alice, 4);
     await this.stakeToken.deployed();
   });
+
+  //test Emits event Pool Created
+  it("Creates a new pool", async () => {
+    await expect(this.stakeToken.createStakingPool(this.stakeToken.address))
+      .to.emit(this.stakeToken, "PoolCreated")
+      .withArgs(0);
+  });
+
   it("deposit", async () => {
     await expect(this.stakeToken.deposit(1, 0)).to.be.revertedWith(
       "Deposit amount can't be zero"
